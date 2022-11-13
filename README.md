@@ -161,16 +161,20 @@ Step 7 — Configuring a WireGuard Peer
 
 
 
-[rocky@vps-4b8b09cb ~]$ sudo vi /etc/wireguard/wg0.conf
-
+joel@joel-HP-Pavilion-Gaming-Laptop-15-ec2xxx:~$ sudo vi /etc/wireguard/wg0.conf
+/etc/wireguard/wg0.conf
 [Interface]
-Address = 10.8.0.1/24
-SaveConfig = true
-ListenPort = 51820
-PrivateKey = MOrFWE+FtMq8w63Qt1dfJyTbrWKAKdx2twGhdHmCV0A=
+PrivateKey = wGLF7XHAAdvNQ/8lUjsZ3Aj7SjeRtDoelU552Qy1SnI=
+Address = 10.8.0.2/24
+
+
+PostUp = ip rule add table 200 from 51.77.203.76
+PostUp = ip route add table 200 default via 51.77.200.1
+PreDown = ip rule delete table 200 from 51.77.203.76
+PreDown = ip route delete table 200 default via 51.77.200.1
+
 
 [Peer]
-PublicKey = Jzj/OcW3VgN/2Qkx9ZaDETyN6qNMLlQ8VPIemLiBtAg=
-AllowedIPs = 10.8.0.2/32
-~                         
-
+PublicKey = GPBW5WtVlWfuuEhjvJiCpnc8OwVSWmiDZXGdomaKymQ=
+AllowedIPs = 10.8.0.0/24
+Endpoint = 51.77.200.1:51820
