@@ -119,8 +119,58 @@ public (active)
 [rocky@vps-4b8b09cb ~]$ sudo firewall-cmd --zone=internal --list-interfaces
 wg0
 
+Step 6 — Starting the WireGuard Server
+
+[rocky@vps-4b8b09cb ~]$ sudo systemctl enable wg-quick@wg0.service
+
+
+[rocky@vps-4b8b09cb ~]$ sudo systemctl start wg-quick@wg0.service
+
+
+[rocky@vps-4b8b09cb ~]$ sudo systemctl status wg-quick@wg0.service
+● wg-quick@wg0.service - WireGuard via wg-quick(8) for wg0
+   Loaded: loaded (/usr/lib/systemd/system/wg-quick@.service; enabled; vendor p>
+   Active: active (exited) since Sun 2022-11-13 17:19:56 UTC; 3h 10min ago
+     Docs: man:wg-quick(8)
+           man:wg(8)
+           https://www.wireguard.com/
+           https://www.wireguard.com/quickstart/
+           https://git.zx2c4.com/wireguard-tools/about/src/man/wg-quick.8
+           https://git.zx2c4.com/wireguard-tools/about/src/man/wg.8
+ Main PID: 1017 (code=exited, status=0/SUCCESS)
+    Tasks: 0 (limit: 10836)
+   Memory: 0B
+   CGroup: /system.slice/system-wg\x2dquick.slice/wg-quick@wg0.service
+
+nov. 13 17:19:55 vps-4b8b09cb.vps.ovh.net systemd[1]: Starting WireGuard via wg>
+nov. 13 17:19:55 vps-4b8b09cb.vps.ovh.net wg-quick[1017]: [#] ip link add wg0 t>
+nov. 13 17:19:56 vps-4b8b09cb.vps.ovh.net wg-quick[1017]: [#] wg setconf wg0 /d>
+nov. 13 17:19:56 vps-4b8b09cb.vps.ovh.net wg-quick[1017]: [#] ip -4 address add>
+nov. 13 17:19:56 vps-4b8b09cb.vps.ovh.net wg-quick[1017]: [#] ip link set mtu 1>
+nov. 13 17:19:56 vps-4b8b09cb.vps.ovh.net systemd[1]: Started WireGuard via wg->
+lines 1-20/20 (END)
+
+Step 7 — Configuring a WireGuard Peer 
+
+[rocky@vps-4b8b09cb ~]$ sudo dnf install elrepo-release epel-release
+[rocky@vps-4b8b09cb ~]$ sudo dnf install kmod-wireguard wireguard-tools
+
+[rocky@vps-4b8b09cb ~]$ wg genkey | sudo tee /etc/wireguard/private.key
+
+[rocky@vps-4b8b09cb ~]$ sudo cat /etc/wireguard/private.key | wg pubkey | sudo tee /etc/wireguard/public.key
 
 
 
+[rocky@vps-4b8b09cb ~]$ sudo vi /etc/wireguard/wg0.conf
 
+[Interface]
+Address = 10.8.0.1/24
+SaveConfig = true
+ListenPort = 51820
+PrivateKey = MOrFWE+FtMq8w63Qt1dfJyTbrWKAKdx2twGhdHmCV0A=
+
+[Peer]
+PublicKey = Jzj/OcW3VgN/2Qkx9ZaDETyN6qNMLlQ8VPIemLiBtAg=
+AllowedIPs = 10.8.0.2/32
+~                         
 
